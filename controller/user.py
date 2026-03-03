@@ -30,8 +30,8 @@ def user_signup():
                 False,
             )
         return bpsky.response_class(
-            response=response,
-            content_type="text",
+            response=json.dumps(response),
+            mimetype="application/json",
             status=200,
         )
     except Exception as e:
