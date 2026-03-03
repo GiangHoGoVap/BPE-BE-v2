@@ -99,7 +99,15 @@ def user_signin():
         password = body["password"]
         email = body["email"]
         token = UserService.signin(email, password)
-        return bpsky.response_class(response=token, content_type="text", status=200)
+        if isinstance(token, (dict, list)):
+            return bpsky.response_class(
+                response=json.dumps(token),
+                mimetype="application/json",
+                status=200,
+            )
+        return bpsky.response_class(
+            response=str(token), content_type="text", status=200
+        )
     except Exception as e:
         return bpsky.response_class(response=e.__str__(), status=500)
 
