@@ -1,0 +1,42 @@
+version: "2.3"
+
+services:
+  web:
+    container_name: bpe-be-ctn-dev
+    image: python:3.11-slim
+    volumes:
+      - ./:/python/src/bpe
+    ports:
+      - "8000:8000"
+    working_dir: /python/src/bpe
+    # command: sh -c "pip install -r ./requirements.txt && python run.py"
+    #    depends_on:
+    #      - db
+    restart: unless-stopped
+    tty: true
+
+#  db:
+#    container_name: bpsky-db-ctn-dev
+#    image: postgres:15.1-alpine
+#    restart: unless-stopped
+#    environment:
+#      #      POSTGRES_DB: ${POSTGRES_DB}
+#      #      POSTGRES_USER: ${POSTGRES_USER}
+#      #      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#      #      PGDATA: ${PGDATA}
+#      DATABASE_URL: 'postgres://iamlvv:wqpkoc6bW9YI@ep-raspy-disk-19788616.ap-southeast-1.aws.neon.tech/neondb'
+#      POSTGRES_USER: 'iamlvv'
+#      POSTGRES_PASSWORD: 'wqpkoc6bW9YI'
+#      POSTGRES_DB: 'neondb'
+#      PGDATA: '/data/postgres'
+#    ports:
+#      - '5432:5432'
+#    volumes:
+#      - postgres:/var/lib/postgresql/data
+#      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+#      - ./database/load_data.sql:/docker-entrypoint-initdb.d/load_data.sql
+
+volumes:
+  postgres:
+    name: postgres-dev
+    driver: local
