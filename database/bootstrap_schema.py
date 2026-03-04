@@ -53,6 +53,95 @@ def bootstrap_schema() -> None:
             );
             """
         )
+        connection.exec_driver_sql(
+            """
+            CREATE TABLE IF NOT EXISTS public.document_file (
+                id serial,
+                document_link character varying NOT NULL UNIQUE,
+                project_id integer NOT NULL,
+                last_saved timestamp without time zone,
+                PRIMARY KEY (document_link, project_id)
+            );
+            """
+        )
+        connection.exec_driver_sql(
+            """
+            CREATE TABLE IF NOT EXISTS public.work_on (
+                id serial,
+                user_id integer NOT NULL,
+                project_id integer NOT NULL,
+                role integer NOT NULL,
+                isDeleted boolean,
+                leftAt timestamp without time zone,
+                PRIMARY KEY (user_id, project_id)
+            );
+            """
+        )
+        connection.exec_driver_sql(
+            """
+            CREATE TABLE IF NOT EXISTS public.request (
+                id serial PRIMARY KEY,
+                type text,
+                content text,
+                createdAt timestamp without time zone NOT NULL,
+                status text,
+                deletedAt timestamp without time zone,
+                isDeleted boolean,
+                isWorkspaceDeleted boolean,
+                workspaceId integer NOT NULL,
+                senderId integer NOT NULL,
+                handlerId integer,
+                recipientId integer NOT NULL,
+                fr_permission text,
+                to_permission text,
+                rcp_permission text
+            );
+            """
+        )
+        connection.exec_driver_sql(
+            """
+            CREATE TABLE IF NOT EXISTS public.notification (
+                id serial PRIMARY KEY,
+                userId integer NOT NULL,
+                createdAt timestamp without time zone NOT NULL,
+                deletedAt timestamp without time zone,
+                content text,
+                isDeleted boolean,
+                isStarred boolean,
+                isRead boolean,
+                notificationType text,
+                status text,
+                workspaceId integer,
+                permission text
+            );
+            """
+        )
+        connection.exec_driver_sql(
+            """
+            CREATE TABLE IF NOT EXISTS public.comment_on (
+                id serial PRIMARY KEY,
+                user_id integer NOT NULL,
+                project_id integer NOT NULL,
+                process_id integer NOT NULL,
+                xml_file_link character varying NOT NULL,
+                content character varying NOT NULL,
+                create_at timestamp without time zone
+            );
+            """
+        )
+        connection.exec_driver_sql(
+            """
+            CREATE TABLE IF NOT EXISTS public.history_image (
+                id serial,
+                xml_file_link character varying NOT NULL,
+                project_id integer NOT NULL,
+                process_id integer NOT NULL,
+                save_at timestamp without time zone NOT NULL,
+                image_link character varying NOT NULL,
+                PRIMARY KEY (id, xml_file_link, project_id, process_id, save_at)
+            );
+            """
+        )
     print("Schema bootstrap completed.")
 
 
