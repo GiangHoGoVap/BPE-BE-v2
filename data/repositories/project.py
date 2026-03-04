@@ -32,8 +32,8 @@ class Project:
     ):
         query = f"""
             INSERT INTO public.project(
-                description, name, create_at, workspaceId, ownerId, is_delete)
-                VALUES ('{description}', '{name}', '{createdAt}', '{workspaceId}', '{user_id}', {is_delete})
+                description, name, create_at, workspaceId, ownerId, is_delete, isWorkspaceDeleted)
+                VALUES ('{description}', '{name}', '{createdAt}', '{workspaceId}', '{user_id}', {is_delete}, false)
                 RETURNING id, description, name, create_at, ownerId, workspaceId;
         """
         connection = DatabaseConnector.get_connection()
