@@ -142,6 +142,12 @@ def bootstrap_schema() -> None:
             );
             """
         )
+        connection.exec_driver_sql(
+            """
+            ALTER TABLE IF EXISTS public.process_version
+            ADD COLUMN IF NOT EXISTS last_saved timestamp without time zone;
+            """
+        )
     print("Schema bootstrap completed.")
 
 
