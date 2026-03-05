@@ -154,6 +154,19 @@ def bootstrap_schema() -> None:
             ADD COLUMN IF NOT EXISTS is_active boolean DEFAULT false;
             """
         )
+        connection.exec_driver_sql(
+            """
+            ALTER TABLE IF EXISTS public.workspace
+            ADD COLUMN IF NOT EXISTS targeted_cycle_time double precision DEFAULT 0,
+            ADD COLUMN IF NOT EXISTS worst_cycle_time double precision,
+            ADD COLUMN IF NOT EXISTS targeted_cost double precision DEFAULT 0,
+            ADD COLUMN IF NOT EXISTS worst_cost double precision,
+            ADD COLUMN IF NOT EXISTS targeted_quality double precision DEFAULT 100,
+            ADD COLUMN IF NOT EXISTS worst_quality double precision DEFAULT 0,
+            ADD COLUMN IF NOT EXISTS targeted_flexibility double precision DEFAULT 100,
+            ADD COLUMN IF NOT EXISTS worst_flexibility double precision DEFAULT 0;
+            """
+        )
     print("Schema bootstrap completed.")
 
 
