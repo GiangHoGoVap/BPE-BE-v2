@@ -260,21 +260,37 @@ class Health_service:
     @classmethod
     def pl_method(cls, measurement_values, measurement_type):
         if measurement_type == "cycle_time" or measurement_type == "cost":
+            down_worst = abs(measurement_values.threshold - measurement_values.worst)
+            up_target = abs(measurement_values.targeted - measurement_values.threshold)
             if measurement_values.current >= measurement_values.threshold:
-                return -abs(
-                    measurement_values.current - measurement_values.threshold
-                ) / abs(measurement_values.threshold - measurement_values.worst)
-            return abs(measurement_values.current - measurement_values.threshold) / abs(
-                measurement_values.targeted - measurement_values.threshold
+                if down_worst == 0:
+                    return 0
+                return (
+                    -abs(measurement_values.current - measurement_values.threshold)
+                    / down_worst
+                )
+            if up_target == 0:
+                return 0
+            return (
+                abs(measurement_values.current - measurement_values.threshold)
+                / up_target
             )
         else:
+            up_target = abs(measurement_values.targeted - measurement_values.threshold)
+            down_worst = abs(measurement_values.threshold - measurement_values.worst)
             if measurement_values.current >= measurement_values.threshold:
-                return abs(
-                    measurement_values.current - measurement_values.threshold
-                ) / abs(measurement_values.targeted - measurement_values.threshold)
-            return -abs(
-                measurement_values.current - measurement_values.threshold
-            ) / abs(measurement_values.threshold - measurement_values.worst)
+                if up_target == 0:
+                    return 0
+                return (
+                    abs(measurement_values.current - measurement_values.threshold)
+                    / up_target
+                )
+            if down_worst == 0:
+                return 0
+            return (
+                -abs(measurement_values.current - measurement_values.threshold)
+                / down_worst
+            )
 
     @classmethod
     def get_evaluation_result_of_process_version(cls, process_version_version):
@@ -294,13 +310,13 @@ class Health_service:
         cls, evaluation_result, workspace_measurements, process_version_measurements
     ):
         if evaluation_result:
-            if evaluation_result["totalCycleTime"] is None:
+            if evaluation_result.get("totalCycleTime") is None:
                 return None
-            if evaluation_result["totalCost"] is None:
+            if evaluation_result.get("totalCost") is None:
                 return None
-            if evaluation_result["totalQuality"] is None:
+            if evaluation_result.get("totalQuality") is None:
                 return None
-            if evaluation_result["totalFlexibility"] is None:
+            if evaluation_result.get("totalFlexibility") is None:
                 return None
 
         if workspace_measurements:

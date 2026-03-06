@@ -56,17 +56,29 @@ class EvaluatedResultService:
             return None
         survey_result = Survey_result_service.get_survey_result(process_version_version)
         print("survey_result", survey_result)
-        result = evaluation_result.result[0]
+        raw_result = evaluation_result.result
+        if isinstance(raw_result, list):
+            if len(raw_result) == 0:
+                return None
+            result = raw_result[0]
+        elif isinstance(raw_result, dict):
+            result = raw_result
+        else:
+            return None
+
+        if not isinstance(result, dict):
+            return None
+
         out_process_score = survey_result["totalScore"] if survey_result else None
         return {
-            "totalCycleTime": result["totalCycleTime"],
-            "totalCost": result["totalCost"],
+            "totalCycleTime": result.get("totalCycleTime"),
+            "totalCost": result.get("totalCost"),
             "totalQuality": (
-                (result["quality"] + out_process_score) / 2
-                if out_process_score is not None
+                (result.get("quality") + out_process_score) / 2
+                if out_process_score is not None and result.get("quality") is not None
                 else None
             ),
-            "totalFlexibility": result["flexibility"],
+            "totalFlexibility": result.get("flexibility"),
             "inProcess": result.get("quality"),
             "outProcess": out_process_score,
             "outProcessBreakdown": (
