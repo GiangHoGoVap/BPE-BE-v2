@@ -10,4 +10,4 @@ RUN pip install gunicorn
 
 COPY . .
 
-CMD gunicorn --worker-class eventlet --workers 1 --bind 0.0.0.0:${PORT:-8000} run:bpsky
+CMD gunicorn --workers 1 --threads 8 --bind 0.0.0.0:${PORT:-8000} run:bpsky

@@ -8,7 +8,7 @@ from flask_socketio import SocketIO
 bpsky = Flask(__name__, static_url_path="/static/")
 CORS(bpsky, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
-socketio = SocketIO(bpsky, cors_allowed_origins="*")
+socketio = SocketIO(bpsky, cors_allowed_origins="*", async_mode="threading")
 
 load_dotenv()
 from controller.export import *
