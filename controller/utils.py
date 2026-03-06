@@ -2,6 +2,7 @@ from datetime import date, datetime
 from auth.jwt import *
 from bpsky import bpsky
 from flask import request, redirect
+from exceptions import InvalidToken
 from services.evaluate.evaluate import Evaluate
 from services.evaluate.compare import Compare
 from services.project_service.project import ProjectService
@@ -28,10 +29,12 @@ def load_request_body(request):
 
 
 def get_token(request):
-    if "Authorization" in request.headers:
-        return request.headers["Authorization"].split()[1]
+    auth_header = request.headers.get("Authorization", "")
+    parts = auth_header.split()
+    if len(parts) == 2 and parts[0].lower() == "bearer":
+        return parts[1]
 
-    raise Exception("invalid token")
+    raise InvalidToken("Invalid or missing Authorization header")
 
 
 def json_serial(obj):

@@ -1,6 +1,7 @@
 import jwt
 import os
 from data.repositories.user import User
+from exceptions import InvalidToken
 
 
 def encode(payload):
@@ -8,7 +9,10 @@ def encode(payload):
 
 
 def decode(jwt_string):
-    return jwt.decode(jwt_string, os.environ.get("SECRET"), algorithms="HS256")
+    try:
+        return jwt.decode(jwt_string, os.environ.get("SECRET"), algorithms=["HS256"])
+    except Exception:
+        raise InvalidToken()
 
 
 def verify_token(inp):
@@ -23,13 +27,18 @@ def verify_token(inp):
 
 
 def get_id_from_token(jwt_string):
-    result = jwt.decode(jwt_string, os.environ.get("SECRET"), algorithms="HS256")
-    # print(result)
-    verify_token(result)
-    return result["id"]
+    try:
+        result = jwt.decode(jwt_string, os.environ.get("SECRET"), algorithms=["HS256"])
+        verify_token(result)
+        return result["id"]
+    except Exception:
+        raise InvalidToken()
 
 
 def get_email_from_token(jwt_string):
-    result = jwt.decode(jwt_string, os.environ.get("SECRET"), algorithms="HS256")
-    verify_token(result)
-    return result["email"]
+    try:
+        result = jwt.decode(jwt_string, os.environ.get("SECRET"), algorithms=["HS256"])
+        verify_token(result)
+        return result["email"]
+    except Exception:
+        raise InvalidToken()
